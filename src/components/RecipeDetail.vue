@@ -2,11 +2,11 @@
   <div class="detail-page">
     <header>
       <div class="title">
-        <i class="fas fa-chevron-left"></i>
+        <i @click="$emit('show-detail')" class="fas fa-chevron-left"></i>
         <span>Tasty Apple Pie</span>
       </div>
       <div class="button">
-        <button>Edit Recipe</button>
+        <button @click="$emit('show-editing')">Edit Recipe</button>
         <button>Delete Recipe</button>
       </div>
     </header>
@@ -32,7 +32,7 @@
 export default {
   data(){
     return {
-      showList: false
+      showList: false,
     }
 
   }

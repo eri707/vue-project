@@ -3,9 +3,9 @@
     <div v-if="!showDetail">
       <header>
         <h2>My recipes</h2>
-        <button @click="showRecipe = true">Add Recipe</button>
+        <button @click="showAddRecipe = true">Add Recipe</button>
       </header>
-      <div v-if="showRecipe" class="recipe-name">
+      <div v-if="showAddRecipe" class="recipe-name">
         <div class="name">
           <label for="recipeName">Name</label>
           <input
@@ -27,24 +27,12 @@
               <tr>
                 <th>Name</th>
                 <th>Ingredients</th>
-                <th>Directions</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th @click="showDetail = true">Tasty Apple pie</th>
-                <th>6</th>
-                <th>8</th>
-              </tr>
-              <tr>
-                <td>Amazing Savory Strudel</td>
-                <th>8</th>
-                <th>12</th>
-              </tr>
-              <tr>
-                <td>Easy Scrumble Eggs</td>
-                <th>3</th>
-                <th>2</th>
+              <tr v-for="item in recipes" :key="item.id">
+                <th @click="showDetail = true">{{ item.name }}</th>
+                <th>{{ item.ingredients ? item.ingredients.length : 0 }}</th>
               </tr>
             </tbody>
           </table>
@@ -52,34 +40,48 @@
       </main>
     </div>
     <div v-if="showDetail">
-      <recipe-detail></recipe-detail>
+      <recipe-detail @show-detail="showDetail=false" @show-editing="showEdit=true"></recipe-detail>
+    </div>
+    <div>
+      <recipe-edit></recipe-edit>
     </div>
   </div>
 </template>
 
 <script>
 import RecipeDetail from "./components/RecipeDetail.vue";
+import RecipeEdit from "./components/RecipeEdit.vue";
 export default {
   name: "App",
   components: {
     RecipeDetail,
+    RecipeEdit
+  },
+  mounted(){
+    this.$store.dispatch('fetchRecipes');
   },
   data() {
     return {
       //recipeTitle: "Tasty Apple pie",
       //ingredients: 6,
       //steps: 8,
-      showRecipe: false,
+      showAddRecipe: false,
       showDetail: false,
+      showEdit: false,
       newRecipeName: "",
     };
   },
   methods: {
     cancelAdding() {
       this.newRecipeName = "";
-      this.showRecipe = false;
+      this.showAddRecipe = false;
     },
   },
+  computed:{
+    recipes(){
+      return this.$store.state.recipes;
+    }
+  }
 };
 </script>
 

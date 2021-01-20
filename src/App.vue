@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div v-if="!showDetail">
+    <div>
       <header>
         <h2>My recipes</h2>
         <button @click="showAddRecipe = true">Add Recipe</button>
@@ -31,7 +31,9 @@
             </thead>
             <tbody>
               <tr v-for="item in recipes" :key="item.id">
-                <th @click="showDetail = true">{{ item.name }}</th>
+                <th>
+                  <a @click="fetchRecipe(item.id)">{{ item.name }}</a>
+                </th>
                 <th>{{ item.ingredients ? item.ingredients.length : 0 }}</th>
               </tr>
             </tbody>
@@ -39,11 +41,8 @@
         </div>
       </main>
     </div>
-    <div v-if="showDetail">
-      <recipe-detail @show-detail="showDetail=false" @show-editing="showEdit=true"></recipe-detail>
-    </div>
     <div>
-      <recipe-edit></recipe-edit>
+      <recipe-detail v-if="recipe"></recipe-detail>
     </div>
   </div>
 </template>
@@ -55,19 +54,14 @@ export default {
   name: "App",
   components: {
     RecipeDetail,
-    RecipeEdit
+    RecipeEdit,
   },
-  mounted(){
-    this.$store.dispatch('fetchRecipes');
+  mounted() {
+    this.$store.dispatch("fetchRecipes");
   },
   data() {
     return {
-      //recipeTitle: "Tasty Apple pie",
-      //ingredients: 6,
-      //steps: 8,
       showAddRecipe: false,
-      showDetail: false,
-      showEdit: false,
       newRecipeName: "",
     };
   },
@@ -76,12 +70,18 @@ export default {
       this.newRecipeName = "";
       this.showAddRecipe = false;
     },
+    fetchRecipe(id) {
+      this.$store.dispatch("fetchRecipe", id);
+    },
   },
-  computed:{
-    recipes(){
+  computed: {
+    recipes() {
       return this.$store.state.recipes;
-    }
-  }
+    },
+    recipe() {
+      return this.$store.state.recipe;
+    },
+  },
 };
 </script>
 

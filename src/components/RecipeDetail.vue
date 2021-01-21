@@ -3,7 +3,10 @@
     <header>
       <!-- #region recipe name -->
       <div class="title" v-if="!clonedRecipe">
-        <i class="fas fa-chevron-left"></i>
+        <i
+          class="fas fa-chevron-left"
+          @click="$store.commit('setRecipe', null)"
+        ></i>
         <span>{{ recipe.name }}</span>
       </div>
       <div class="title" v-else>
@@ -12,12 +15,12 @@
       <!-- #endregion -->
       <!-- #region buttons -->
       <div class="button" v-if="!clonedRecipe">
-        <button @click="showEdit">Edit Recipe</button>
-        <button>Delete Recipe</button>
+        <button @click="showEdit('update')">Edit Recipe</button>
+        <button @click="deleteRecipe">Delete Recipe</button>
       </div>
       <div class="button" v-else>
         <button @click="cancelEdit">Cancel</button>
-        <button>Save Recipe</button>
+        <button @click="saveRecipe">Save Recipe</button>
       </div>
       <!-- #endregion -->
     </header>
@@ -61,14 +64,15 @@
 export default {
   data() {
     return {
-      showList: false,
       clonedRecipe: null,
       ingredientName: null,
       directionName: null,
+      action: 'add'
     };
   },
   methods: {
-    showEdit() {
+    showEdit(action) {
+      this.action = action;
       this.clonedRecipe = JSON.parse(JSON.stringify(this.recipe));
     },
     cancelEdit() {
@@ -82,6 +86,17 @@ export default {
     addIngredient() {
       this.clonedRecipe.ingredients.push(this.ingredientName);
       this.ingredientName = null;
+    },
+    deleteRecipe() {
+      this.$store.dispatch("deleteRecipe", this.recipe.id);
+    },
+    saveRecipe() {
+      if (this.action == "add") {
+        this.$store.dispatch("addRecipe", this.clonedRecipe);
+      } else {
+        this.$store.dispatch("updateRecipe", this.clonedRecipe);
+      }
+      this.clonedRecipe = null;
     },
   },
   computed: {

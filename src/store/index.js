@@ -31,6 +31,37 @@ const store = new Vuex.Store({
             if(!response.ok) return null;
             // call mutation with response data
             commit('setRecipe', await response.json())
+        },
+        async deleteRecipe({ commit, dispatch }, payload){
+            const response = await fetch(`http://localhost:10/${payload}`, {
+                method: 'DELETE'
+            });
+            if(!response.ok) return null;
+            // call mutation with response data
+            commit('setRecipe', null);
+            dispatch('fetchRecipes');
+        },
+        async updateRecipe({ commit, dispatch }, payload){
+            const response = await fetch(`http://localhost:10/${payload.id}`, {
+                method: 'put',
+                body: JSON.stringify(payload),
+                headers:{'content-type': 'application/json'},
+            });
+            if(!response.ok) return null;
+            // call mutation with response data
+            commit('setRecipe', await response.json());
+            dispatch('fetchRecipes');
+        },
+        async addRecipe({ commit, dispatch }, payload){
+            const response = await fetch(`http://localhost:10/`, {
+                method: 'post',
+                body: JSON.stringify(payload),
+                headers:{'content-type': 'application/json'},
+            });
+            if(!response.ok) return null;
+            // call mutation with response data
+            commit('setRecipe', await response.json());
+            dispatch('fetchRecipes');
         }
     }
 })

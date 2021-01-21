@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div>
+    <div v-if="!recipe"> 
       <header>
         <h2>My recipes</h2>
         <button @click="showAddRecipe = true">Add Recipe</button>
@@ -17,7 +17,7 @@
         </div>
         <div class="button">
           <button @click="cancelAdding">Cancel</button>
-          <button>Save</button>
+          <button @click="addRecipe">Save</button>
         </div>
       </div>
       <main>
@@ -42,19 +42,17 @@
       </main>
     </div>
     <div>
-      <recipe-detail v-if="recipe"></recipe-detail>
+      <recipe-detail ref="detail" v-if="recipe"></recipe-detail>
     </div>
   </div>
 </template>
 
 <script>
 import RecipeDetail from "./components/RecipeDetail.vue";
-import RecipeEdit from "./components/RecipeEdit.vue";
 export default {
   name: "App",
   components: {
     RecipeDetail,
-    RecipeEdit,
   },
   mounted() {
     this.$store.dispatch("fetchRecipes");
@@ -73,12 +71,24 @@ export default {
     fetchRecipe(id) {
       this.$store.dispatch("fetchRecipe", id);
     },
+    addRecipe() {
+      this.$store.commit("setRecipe", {
+        name: this.newRecipeName,
+        ingredients: [],
+        directions: "",
+      });
+      setTimeout(() => {
+        this.$refs.detail.showEdit('add');
+      }, 50);
+      this.cancelAdding();
+    },
   },
   computed: {
     recipes() {
       return this.$store.state.recipes;
     },
     recipe() {
+      console.log(this.$store.state.recipe);
       return this.$store.state.recipe;
     },
   },
@@ -107,5 +117,8 @@ header {
   .name {
     margin-left: 18px;
   }
+}
+a {
+  cursor: pointer;
 }
 </style>

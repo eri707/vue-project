@@ -1,19 +1,6 @@
-# vue-project
+# Recipes vue project
+This vue-project creates a food recipe application using which users can add, delete and update recipes.
 
-## Project setup
-```
-npm install
-```
+The application has a list page and a detail page. Users can also edit the recipe.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+The recipe API used in this application is from a previous project hosted at http://localhost:10/.
